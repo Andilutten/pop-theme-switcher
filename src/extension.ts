@@ -8,6 +8,22 @@ const WORKBENCH_THEME = "workbench.colorTheme";
 
 let watcher: ChildProcess | null = null
 
+// Validate if device meets requirements
+function validate(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        if (process.platform !== "linux") {
+            return reject(new Error("Platform is not linux"))
+        }
+        spawn("which dconf").on('close', code => {
+            if (code != 0) {
+                return reject(new Error("DConf is missing in Path"))
+            }
+            resolve()
+        })
+    })
+}
+
+// Start dconf watcher
 function startWatcher() {
     if (watcher !== null) return;
     watcher = spawn('dconf', ["watch", DCONF_KEY]);
@@ -22,22 +38,26 @@ function startWatcher() {
     })
 }
 
+// Returns dark or light theme
 function whichPopOSTheme(input: string) : PopOSTheme {
     if (/Pop-dark/.test(input)) return "dark";
     if (/Pop/.test(input)) return "light";
     return "unknown";
 }
 
+// Apply theme on workspace
 function applyTheme(theme: string) {
     if (theme !== getCurrentTheme()) {
         vscode.workspace.getConfiguration().update(WORKBENCH_THEME, theme, true);
     }
 } 
 
+// Gets the current theme
 function getCurrentTheme(): string {
     return vscode.workspace.getConfiguration().get(WORKBENCH_THEME) || "";
 }
 
+// Manually checks current value. Used on startup to synchronize
 function manual() {
     exec(`dconf read ${DCONF_KEY}`, (err, stdout, _) => {
         if (err) { return console.error(err); }
@@ -49,12 +69,18 @@ function manual() {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-    manual();
-    startWatcher();
+    validate()
+    .then(() => {
+        manual();
+        startWatcher();
+    })
+    .catch(reason => {
+        console.error(reason);
+        vscode.window.showErrorMessage("This extension only works on a linux based system with dconf in $PATH")
+    })
 }
 
 export function deactivate() {
-    console.log("Killing watcher");
     if (watcher !== null) {
         watcher.kill();
         watcher = null;
