@@ -1,9 +1,9 @@
 {
 	"name": "pop-theme-switcher",
-	"displayName": "Pop! Theme Switcher",
+	"displayName": "Pop Theme Switcher",
     "description": "Changes vscode theme depending on your dark/light mode in Pop! OS",
     "author": "Andreas Malmqvist",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
