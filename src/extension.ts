@@ -14,7 +14,8 @@ function validate(): Promise<void> {
         if (process.platform !== "linux") {
             return reject(new Error("Platform is not linux"))
         }
-        spawn("which dconf").on('close', code => {
+        const wh = spawn("which", ["dconf"])
+        wh.on('close', code => {
             if (code != 0) {
                 return reject(new Error("DConf is missing in Path"))
             }
