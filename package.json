@@ -1,14 +1,17 @@
 {
 	"name": "pop-theme-switcher",
 	"displayName": "Pop! Theme Switcher",
-	"description": "Changes vscode theme depending on your dark/light mode in Pop! OS",
-	"version": "0.0.1",
+    "description": "Changes vscode theme depending on your dark/light mode in Pop! OS",
+    "author": "Andreas Malmqvist",
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.33.0"
 	},
 	"categories": [
 		"Other"
-	],
+    ],
+    "publisher": "andilutten92",
+    "repository": "https://github.com/Andilutten/pop-theme-switcher",
 	"activationEvents": ["*"],
 	"main": "./out/extension.js",
 	"contributes": {},
